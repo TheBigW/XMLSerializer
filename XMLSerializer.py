@@ -41,8 +41,10 @@ class Serializer(object):
         return ET.tostring(rootElem)
 
     def DeserializeArray(self, XMLParent, value):
-        #TODO: not nice array needs to have at least one value for correct type information
-        theType = type(value[0])
+        #array needs to have at least one value for correct type information, else values are read and treated as string
+        theType = str
+        if len(value) > 0:
+            theType = type(value[0])
         arrayInst = []
         for arrayIndex, arrayNode in enumerate(XMLParent):
             arrayInst.append( self.DeserializeMember( arrayNode, value[0] ) )
