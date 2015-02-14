@@ -72,17 +72,16 @@ print( value )
 
 
 aInst = myClass()
-ser = Serializer()
-strXml = ser.Serialize(aInst)
+strXml = Serializer.Serialize(aInst)
 print "XML : " + strXml
 
 anotherInst = myClass()
 anotherInst.initDifferent()
 print "now they are different? : " + str(aInst != anotherInst)
 
-anotherInst = ser.DeSerialize( strXml, anotherInst )
+anotherInst = Serializer.DeSerialize( strXml, anotherInst )
 #just for contol
-strXml = ser.Serialize(anotherInst)
+strXml = Serializer.Serialize(anotherInst)
 
 print "Deserialized XML : " + strXml
 print "same as before? : " + str(aInst == anotherInst)
