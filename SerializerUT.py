@@ -4,19 +4,21 @@
 #resp = con.getresponse()
 #print( resp.read() )
 from lxml import objectify, etree
-from cStringIO import StringIO
+from io import StringIO
 import pickle
-import httplib
 import re
 from XMLSerializer import Serializer
 
 
 class MemberClass:
-    def __init__(self):
-        self.m_strTest = "just some junk..."
+    def __init__(self, param = None):
+        if param != None:
+            self.m_strTest = param
+        else:
+            self.m_strTest = "just some junk..."
     def __eq__(self, other):
         if isinstance(other, self.__class__):
-            print "eq : " + str(self.__dict__ )+ " AND : " +  str(other.__dict__)
+            print( "eq : " + str(self.__dict__ )+ " AND : " +  str(other.__dict__) )
             return self.__dict__ == other.__dict__
         else:
             return False
@@ -31,12 +33,14 @@ class myClass(object):
         self.m_iContent = 123
         self.m_fcontent = 2.3
         self.m_Array = [1, 2, 3, 4]
+        self.m_ClassArray = [MemberClass("member1"),MemberClass("member2")]
         self.m_classMember = MemberClass()
     def initDifferent(self):
         self.m_strContent = 'tralalala'
         self.m_iContent = 345
         self.m_fcontent = 8.8
         self.m_Array = [5, 6, 7, 8]
+        self.m_ClassArray = [MemberClass("member_different1"),MemberClass("member_different2")]
         self.m_classMember = MemberClass()
         self.m_classMember.m_strTest = "some differnt junk"
 
@@ -55,7 +59,6 @@ class myClass(object):
         return "hello yeah!"
 
 src = StringIO()
-p = pickle.Pickler(src)
 
 testList = list()
 for k in range(0, 10):
@@ -64,7 +67,6 @@ for k in range(0, 10):
     aInst.m_strContent = "Iteration No." + str(k)
     aInst.m_fcontent = float(k)
     testList.append( aInst )
-p.dump(testList)
 
 value = src.getvalue()
 
@@ -73,18 +75,18 @@ print( value )
 
 aInst = myClass()
 strXml = Serializer.Serialize(aInst)
-print "XML : " + strXml
+print( "XML : " + str(strXml) )
 
 anotherInst = myClass()
 anotherInst.initDifferent()
-print "now they are different? : " + str(aInst != anotherInst)
+print("now they are different? : " + str(aInst != anotherInst))
 
 anotherInst = Serializer.DeSerialize( strXml, anotherInst )
 #just for contol
 strXml = Serializer.Serialize(anotherInst)
 
-print "Deserialized XML : " + strXml
-print "same as before? : " + str(aInst == anotherInst)
+print("Deserialized XML : " + str(strXml))
+print("same as before? : " + str(aInst == anotherInst))
 
 #loadedList = pickle.load( value )
 #print(loadedList)
